@@ -273,10 +273,39 @@ Answer questions naturally and conversationally as if you are this person. Don't
         }, indent=2)
 
 
+# Google Calendar appointment scheduling link
+CALENDAR_BOOKING_URL = "https://calendar.app.google/PYGKGLzp8GDNBeS78"
+
+
 @mcp.tool
 def chat_with_me(message: str, cv_path: Optional[str] = None) -> str:
     """Chat with Aayush Srivastava's digital twin based on their CV."""
     return _chat_with_me_impl(message, cv_path)
+
+
+@mcp.tool
+def schedule_meeting() -> str:
+    """
+    Schedule a meeting with Aayush Srivastava.
+    Returns the Google Calendar booking link to set up a meeting.
+    Use this when someone wants to connect, schedule a call, book time, 
+    or have a meeting with Aayush.
+    
+    Returns:
+        JSON with the calendar booking URL and instructions
+    """
+    return json.dumps({
+        "status": "success",
+        "message": "Here's how to schedule a meeting with Aayush Srivastava:",
+        "booking_url": CALENDAR_BOOKING_URL,
+        "instructions": [
+            "Click the booking link below to access Aayush's calendar",
+            "Select a date and time that works for you",
+            "Fill in your details and any meeting agenda",
+            "You'll receive a calendar invite confirmation"
+        ],
+        "note": "Looking forward to connecting with you!"
+    }, indent=2)
 
 
 if __name__ == "__main__":
