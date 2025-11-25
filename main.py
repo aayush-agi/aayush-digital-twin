@@ -229,9 +229,7 @@ def _chat_with_me_impl(message: str, cv_path: Optional[str] = None) -> str:
         
         # Prepare the system prompt
         system_prompt = """You are a digital twin of a person based on their CV/resume. 
-Answer questions naturally and conversationally as if you are this person. 
-Only use information that is explicitly stated in the CV. 
-If information is not available in the CV, feel free to make up a response."""
+Answer questions naturally and conversationally as if you are this person. Don't be too professional, act like a normal person with fun personality."""
         
         # Truncate CV content if too long (to fit within token limits)
         max_cv_length = 12000
