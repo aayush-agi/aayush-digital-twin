@@ -4,6 +4,7 @@ Takes a CV PDF as input and behaves like a digital twin, answering questions abo
 """
 
 import os
+import sys
 from pathlib import Path
 from typing import Optional
 import json
@@ -88,7 +89,7 @@ def extract_text_from_pdf(pdf_path: str) -> str:
                 text = "\n\n".join(pages_text)
                 return text
         except Exception as e:
-            print(f"Error with pdfplumber: {e}")
+            print(f"Error with pdfplumber: {e}", file=sys.stderr)
     
     if HAS_PYPDF2:
         try:
@@ -100,7 +101,7 @@ def extract_text_from_pdf(pdf_path: str) -> str:
                 text = "\n\n".join(pages_text)
                 return text
         except Exception as e:
-            print(f"Error with PyPDF2: {e}")
+            print(f"Error with PyPDF2: {e}", file=sys.stderr)
     
     raise ImportError(
         "No PDF library available. Please install pdfplumber or PyPDF2:\n"
@@ -131,7 +132,7 @@ def load_cv(pdf_path: str) -> None:
     if not os.path.exists(pdf_path):
         raise FileNotFoundError(f"CV file not found: {pdf_path}")
     
-    print(f"Loading CV from: {pdf_path}")
+    print(f"Loading CV from: {pdf_path}", file=sys.stderr)
     cv_content = extract_text_from_pdf(pdf_path)
     
     cv_metadata = {
@@ -151,19 +152,19 @@ def load_all_pdfs_from_docs() -> None:
     if not pdf_files:
         raise FileNotFoundError("No PDF files found in docs/ directory")
     
-    print(f"Found {len(pdf_files)} PDF file(s) in docs directory")
+    print(f"Found {len(pdf_files)} PDF file(s) in docs directory", file=sys.stderr)
     
     all_content_parts = []
     loaded_files = []
     
     for pdf_path in pdf_files:
         try:
-            print(f"Loading: {os.path.basename(pdf_path)}")
+            print(f"Loading: {os.path.basename(pdf_path)}", file=sys.stderr)
             content = extract_text_from_pdf(pdf_path)
             all_content_parts.append(f"\n\n--- Content from {os.path.basename(pdf_path)} ---\n\n{content}")
             loaded_files.append(pdf_path)
         except Exception as e:
-            print(f"Warning: Failed to load {pdf_path}: {e}")
+            print(f"Warning: Failed to load {pdf_path}: {e}", file=sys.stderr)
             continue
     
     if not all_content_parts:
@@ -179,7 +180,7 @@ def load_all_pdfs_from_docs() -> None:
         "loaded": True
     }
     
-    print(f"Successfully loaded {len(loaded_files)} PDF file(s), total content length: {len(cv_content)} characters")
+    print(f"Successfully loaded {len(loaded_files)} PDF file(s), total content length: {len(cv_content)} characters", file=sys.stderr)
 
 
 def _chat_with_me_impl(message: str, cv_path: Optional[str] = None) -> str:
@@ -309,33 +310,31 @@ def schedule_meeting() -> str:
 
 
 if __name__ == "__main__":
-    import sys
-    
     if len(sys.argv) > 1:
         pdf_path = sys.argv[1]
         try:
             load_cv(pdf_path)
-            print("CV loaded successfully!")
-            print(f"CV file: {pdf_path}")
-            print(f"Content length: {len(cv_content)} characters")
+            print("CV loaded successfully!", file=sys.stderr)
+            print(f"CV file: {pdf_path}", file=sys.stderr)
+            print(f"Content length: {len(cv_content)} characters", file=sys.stderr)
         except Exception as e:
-            print(f"Error loading CV: {e}")
+            print(f"Error loading CV: {e}", file=sys.stderr)
     else:
         # Try to auto-load all PDFs from docs directory
         try:
             load_all_pdfs_from_docs()
-            print("PDFs loaded successfully from docs directory!")
+            print("PDFs loaded successfully from docs directory!", file=sys.stderr)
             if cv_metadata.get("file_names"):
-                print(f"Loaded files: {', '.join(cv_metadata['file_names'])}")
-            print(f"Total content length: {len(cv_content)} characters")
+                print(f"Loaded files: {', '.join(cv_metadata['file_names'])}", file=sys.stderr)
+            print(f"Total content length: {len(cv_content)} characters", file=sys.stderr)
         except Exception as e:
-            print(f"Error loading PDFs: {e}")
-            print("\nCV Digital Twin MCP Server")
-            print("Usage: python main.py <path_to_cv.pdf>")
-            print("\nOr place PDF file(s) in the docs/ directory and use as MCP server:")
-            print("  - chat_with_me(message): Chat with your digital twin")
-            print("  - All PDFs in docs/ will be automatically scanned and loaded")
-            print("\nTo run as MCP server:")
-            print("  python -m fastmcp run main.py")
-            print("  or")
-            print("  fastmcp run main.py")
+            print(f"Error loading PDFs: {e}", file=sys.stderr)
+            print("\nCV Digital Twin MCP Server", file=sys.stderr)
+            print("Usage: python main.py <path_to_cv.pdf>", file=sys.stderr)
+            print("\nOr place PDF file(s) in the docs/ directory and use as MCP server:", file=sys.stderr)
+            print("  - chat_with_me(message): Chat with your digital twin", file=sys.stderr)
+            print("  - All PDFs in docs/ will be automatically scanned and loaded", file=sys.stderr)
+            print("\nTo run as MCP server:", file=sys.stderr)
+            print("  python -m fastmcp run main.py", file=sys.stderr)
+            print("  or", file=sys.stderr)
+            print("  fastmcp run main.py", file=sys.stderr)
