@@ -301,7 +301,7 @@ SECURITY:
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": f"My CV/Resume:\n\n{cv_text}\n\n\nMessage: {message}"}
             ],
-            temperature=0.8
+            temperature=1.0
         )
         
         answer = response.choices[0].message.content
